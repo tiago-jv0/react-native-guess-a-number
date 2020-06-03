@@ -3,14 +3,16 @@ import { StyleSheet, Text, View, TextInput, Button, TouchableWithoutFeedback, Ke
 
 import Card from '../components/Card';
 import Input from '../components/Input';
+import NumberContainer from '../components/NumberContainer';
+
 import Colors from '../constants/colors';
 
-const StartGame = () => {
+const StartGame = (props) => {
   const [enteredValue, setEnteredValue] = useState('');
   const [confirmed, setConfirmed] = useState(false);
   const [selectedNumber, setSelectedNumber] = useState(0);
 
-  const textChangeHandler = (text) => {
+  const numberInputHandler = (text) => {
     setEnteredValue(text.replace(/[^0-9]/g, ''));
   };
 
@@ -29,11 +31,18 @@ const StartGame = () => {
     setConfirmed(true);
     setSelectedNumber(chosenNumber);
     setEnteredValue('');
+    Keyboard.dismiss();
   };
   let confirmedOutput;
 
   if (confirmed) {
-    confirmedOutput = <Text> Chosen number: {selectedNumber}</Text>;
+    confirmedOutput = (
+      <Card style={styles.summaryContainer}>
+        <Text> You selected: {selectedNumber}</Text>
+        <NumberContainer>{selectedNumber}</NumberContainer>
+        <Button title="START GAME" onPress={props.onStartGame(selectedNumber)}></Button>
+      </Card>
+    );
   }
 
   return (
@@ -44,7 +53,7 @@ const StartGame = () => {
           <Text> Select a number </Text>
           <Input
             value={enteredValue}
-            onTextChange={textChangeHandler}
+            onChangeText={numberInputHandler}
             customStyle={styles.input}
             blurOnSubmit
             autoCapitalize="none"
@@ -97,5 +106,10 @@ const styles = StyleSheet.create({
 
   buttonContainer: {
     width: '45%',
+  },
+
+  summaryContainer: {
+    marginTop: 20,
+    alignItems: 'center',
   },
 });
